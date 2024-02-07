@@ -1,0 +1,270 @@
+@import "./variables";
+
+html {
+    background-image: url("../../images/starting/bg__photo__PC.jpg");
+    background-color: $color__primary;
+    min-height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-blend-mode: overlay;
+}
+body {
+    background: none;
+    height: 100vh;
+}
+
+.stats {
+    background-color: rgba($color: $color__text__primary, $alpha: 0.4);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    border-radius: 0.8rem;
+    &__name,
+    &__number {
+        color: $color__primary;
+        text-align: center;
+        font-size: calc(var(--var__fs__lg) * 1.5);
+        margin: 0 0.1rem;
+    }
+    &__block {
+        display: inline-block;
+        padding: 2rem;
+    }
+}
+
+.content__list {
+    background-color: rgba($color: $color__text__primary, $alpha: 0.4);
+    backdrop-filter: blur(10px);
+    border-radius: 0.8rem;
+    list-style: none;
+    padding: 1.5rem;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    &__item {
+        flex-grow: 0;
+        flex-shrink: 0;
+        width: 200px;
+        height: 200px;
+        &__photo {
+            width: 100%;
+            border-radius: 100%;
+        }
+    }
+}
+
+.starting__container {
+    padding: 3rem;
+    min-height: 100%;
+}
+
+.user__starting__panel {
+    background-color: rgba($color: $color__text__primary, $alpha: 0.6);
+    backdrop-filter: blur(10px);
+    border-radius: 0.8rem 0.8rem 0 0;
+    list-style: none;
+    padding: 3rem;
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 3rem;
+    gap: 1rem;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.btn__link:link , .btn__link:visited {
+    color: $color__text__primary;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    text-wrap: nowrap;
+    padding: 1rem;
+    border-radius: 3rem;
+    width: 18rem;
+    height: 4rem;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 7rem;
+}
+
+.btn__login {
+    background-color: $color__primary;
+}
+
+.btn__reg {
+    background-color: $color__secondary;
+}
+
+.content__end {
+    margin-bottom: 160px;
+}
+
+.login__form {
+    background-color: rgba($color: $color__text__primary, $alpha: 0.6);
+    backdrop-filter: blur(10px);
+    border-radius: 0.8rem;
+    padding: 2rem 3rem;
+    width: 900px;
+    &__name,
+    &__number {
+        color: $color__primary;
+        text-align: center;
+        font-size: calc(var(--var__fs__lg) * 1.5);
+    }
+    &__label {
+        color: $color__primary;
+        font-size: calc(var(--var__fs__lg) * 1.2);
+        margin: 0.2rem 0;
+    }
+    &__input {
+        text-align: left;
+        font-size: 1rem;
+        height: 40px;
+        padding-left: 10px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        width: 100%;
+        border: none;
+        outline: none;
+    }
+    &__label__sm {
+        color: $color__primary;
+        font-size: calc(var(--var__fs__lg) * 1);
+        margin: 0.5rem 0;
+    }
+
+    &__checkbox {
+        width: 20px;
+        height: 20px;
+        margin-left: 0.4rem;
+        accent-color: $color__text__secondary;
+    }
+
+    &__radio
+    {
+        width: 20px;
+        height: 20px;
+        margin: 0 0.2rem;
+        accent-color: $color__text__secondary;
+    }
+
+    &__btn {
+        margin: 1.3rem 0;
+        padding: 1rem;
+        background-color: $color__secondary;
+        color: $color__text__primary;
+        font-size: calc(var(--var__fs__lg) * 0.7);
+        border-radius: 0.5rem;
+        width: 100%;
+        height: 50px;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 7rem;
+        outline: none;
+        border: none;
+
+    }
+}
+
+.middler {
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media only screen and (max-width: 1800px) {
+    :root {
+        --var__fs__lg: #{$font__size__md__pc};
+    }
+    .login__form {
+        width: 700px;
+    }
+}
+
+@media only screen and (max-width: 1450px) {
+    :root {
+        --var__fs__lg: #{$font__size__xsm__pc};
+        --var__fs__md: #{$font__size__lg__pc};
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    :root {
+        --var__fs__lg: #{$font__size__sm__pc};
+    }
+    .starting__container {
+        padding: 2rem;
+    }
+    .login__form {
+        width: 500px;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .content__list {
+        padding: 1rem;
+        gap: 0.8rem;
+        &__item {
+            width: 100px;
+            height: 100px;
+        }
+    }
+    .btn__link:link , .btn__link:visited {
+        width: 10rem;
+        font-size: 1.2rem;
+    }
+}
+
+@media only screen and (max-width: 576px) {
+    :root {
+        --var__fs__md: #{$font__size__md__pc};
+    }
+
+    .stats {
+        flex-direction: column;
+
+        &__block {
+            padding: 0.4rem;
+        }
+    }
+
+    .user__starting__panel {
+        padding: 1rem;
+        display: flex;
+        margin: 0 2rem;
+    }
+
+    .btn__link:link , .btn__link:visited {
+        width: 7rem;
+        height: 3.5rem;
+    }
+
+    .content__end {
+        margin-bottom: 90px;
+    }
+
+    .login__form
+    {
+        padding: 0.5rem 2rem;
+    }
+    .starting__container {
+        padding: 1rem;
+    }
+}
+
+.logo__title {
+    display: block;
+}

@@ -1,0 +1,33 @@
+// Body
+$body-bg: #f8fafc;
+
+// Typography
+$font-family-sans-serif: 'Nunito', sans-serif;
+$font-size-base: 0.9rem;
+$line-height-base: 1.6;
+
+// colors
+$color__primary: #212836;
+$color__secondary: #343e53;
+$color__text__primary: #eeeeee;
+$color__text__secondary: #068fff;
+$color__text__side: #bbcdff;
+
+$font__size__xlg__pc: 2.5rem;
+$font__size__lg__pc: 2rem;
+$font__size__xmd__pc: 1.7rem;
+$font__size__md__pc: 1.5rem;
+$font__size__xsm__pc: 1.3rem;
+$font__size__sm__pc: 1rem;
+
+:root {
+    --var__fs__lg: #{$font__size__lg__pc};
+    --var__fs__md: #{$font__size__md__pc};
+    --var__fs__sm: #{$font__size__xsm__pc};
+}
+body,
+html {
+    margin: 0;
+    padding: 0;
+    font-family: "estedad regular", "Montserrat regular", sans-serif;
+}

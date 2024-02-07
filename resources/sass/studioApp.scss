@@ -1,0 +1,28 @@
+// Fonts
+@import url("https://fonts.bunny.net/css?family=Nunito");
+
+// Bootstrap
+@import "bootstrap/scss/bootstrap";
+
+@font-face {
+    font-family: "estedad regular";
+    src: url("../../fonts/Estedad\ regular.ttf");
+}
+@font-face {
+    font-family: "Montserrat regular";
+    src: url("../../fonts/Montserrat-Regular.ttf");
+}
+@import "./variables";
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "estedad regular", "Montserrat regular", sans-serif;
+}
+
+
+.exit__btn {
+    background: none;
+    border: none;
+    outline: none;
+}

@@ -1,0 +1,14 @@
+{
+    "Whoops" : "وای",
+    "Hello!" : "سلام!",
+    "Regards" : "با احترام",
+    "All rights reserved." : "تمامی حقوق محفوظ است.",
+    "Reset Password Notification" : "اعلان بازنشانی رمز عبور",
+    "You are receiving this email because we received a password reset request for your account." : "شما این ایمیل را دریافت می‌کنید زیرا ما یک درخواست بازنشانی رمز عبور برای حساب شما دریافت کرده‌ایم.",
+    "Reset Password" : "بازنشانی رمز عبور",
+    "If you did not request a password reset, no further action is required." : "اگر بازنشانی رمز عبور را درخواست نکردید، هیچ اقدام دیگری لازم نیست.",
+    "This password reset link will expire in :count minutes." : "این لینک بازنشانی رمز عبور در :count دقیقه منقضی می شود.",
+    "Verify Email Address" : "تأیید آدرس ایمیل",
+    "Please click the button below to verify your email address." : "لطفا روی دکمه زیر کلیک کنید تا آدرس ایمیل خود را تأیید کنید.",
+    "If you did not create an account, no further action is required." : "اگر حساب کاربری ایجاد نکردید، هیچ اقدام دیگری لازم نیست."
+}
