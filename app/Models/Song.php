@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use App\Models\playlist;
+use App\Models\Playlist;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,7 +21,7 @@ class Song extends Model
     }
 
     public function playlists() {
-        return $this->belongsToMany(playlist::class, 'song_in_playlist', 'music_id', 'list_id')->withPivot('updated_at');
+        return $this->belongsToMany(Playlist::class, 'song_in_playlist', 'music_id', 'list_id')->withPivot('updated_at');
     }
 
     public function likedSongs() {

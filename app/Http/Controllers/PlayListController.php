@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\playlist;
+use App\Models\Playlist;
 use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -27,7 +27,7 @@ class PlayListController extends Controller
     }
     public function showAPlaylist($id)
     {
-        $playlist = playlist::find($id);
+        $playlist = Playlist::find($id);
         $playlistName = $playlist->name;
         $MusicsInPlayList = $playlist->songs;
         $ListOfIdsforMusicList = MakeListofIds($MusicsInPlayList);
