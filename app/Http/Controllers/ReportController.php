@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Song;
+use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,7 @@ class ReportController extends Controller
     {
         $music =  Song::find($req->id);
         $user = Auth::user();
-        if ($music->owner_id != $user->id) {
+        if (! $music->isOwner($user->id )) {
             $id = $req->id;
             $name = $music->name;
             return view('user.report', compact('id', 'name'));
@@ -38,14 +39,12 @@ class ReportController extends Controller
         if ($type != "Copyright" && $type != "ChildAbuse" && $type != "Violence" && $type != "Unethical" && $type != "Other")
             $type = 'Other';
         try {
-            DB::table('reports')
-                ->insert([
+            Report::insert([
                     'music_id' => $req->id,
                     'type' => $type,
                     'level' => $level,
                     'info' => $req->info,
-                    'status' => 0,
-                    'created_at' => Carbon::now()
+                    'status' => 0
                 ]);
             session()->flash('success', 'گزارش شما با موفقیت ثبت شد!');
         } catch (\Throwable $th) {

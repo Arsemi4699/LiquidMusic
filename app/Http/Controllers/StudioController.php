@@ -13,10 +13,8 @@ class StudioController extends Controller
 {
     public function MusicCneter()
     {
-        $ArtistMusics = DB::table('songs')
-            ->where('owner_id', Auth::user()->id)
-            ->orderByDesc('created_at')
-            ->get();
+        $artist = User::find(Auth::user()->id);
+        $ArtistMusics = $artist->songs()->orderByDesc('created_at')->get();
 
         return view('studio.MusicCenter', compact('ArtistMusics'));
     }
@@ -28,6 +26,7 @@ class StudioController extends Controller
                 'artistID' => 'required',
                 'payoff' => 'required|gt:0',
             ]);
+
             DB::beginTransaction();
 
             $balanceC = DB::table('artist_wallet')

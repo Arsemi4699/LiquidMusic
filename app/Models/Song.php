@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use App\Models\playlist;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +14,31 @@ class Song extends Model
 
     protected $table = "songs";
     protected $guarded = [];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function playlists() {
+        return $this->belongsToMany(playlist::class, 'song_in_playlist', 'music_id', 'list_id')->withPivot('updated_at');
+    }
+
+    public function likedSongs() {
+        return $this->belongsToMany(Song::class, 'likes', 'user_id', 'music_id')->withPivot('updated_at');
+    }
+
+    public function likedByUsers() {
+        return $this->belongsToMany(User::class, 'likes', 'music_id', 'user_id')->withPivot('updated_at');
+    }
+
+    public function viewedByUsers() {
+        return $this->belongsToMany(User::class, 'views', 'music_id', 'user_id')->withPivot('updated_at');
+    }
+
+    public function isOwner($userId) : bool {
+        return $this->owner_id == $userId;
+    }
 
     public static function getTopViewsOfWeek()
     {

@@ -13,12 +13,12 @@ class playlist extends Model
 
     use HasFactory;
 
-    public function getAllMusics() {
-        $MusicsInPlayList = DB::table('song_in_playlist')
-            ->select('music_id as id', 'updated_at')
-            ->where('list_id', $this->id)
-            ->orderByDesc('updated_at')
-            ->get();
-        return $MusicsInPlayList;
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function songs() {
+        return $this->belongsToMany(Song::class, 'song_in_playlist', 'list_id', 'music_id')->withPivot('updated_at');
     }
 }

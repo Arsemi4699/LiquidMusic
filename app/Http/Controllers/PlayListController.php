@@ -14,7 +14,7 @@ class PlayListController extends Controller
     public function AddToPlayList($id)
     {
         $user = User::find(Auth::user()->id);
-        $Playlists = $user->getUserPlaylists();
+        $Playlists = $user->playlists;
         $musicId = $id;
         if ($Playlists->count())
             return view('playlist.addToPlayList', compact('Playlists', 'musicId'));
@@ -29,7 +29,7 @@ class PlayListController extends Controller
     {
         $playlist = playlist::find($id);
         $playlistName = $playlist->name;
-        $MusicsInPlayList = $playlist->getAllMusics();
+        $MusicsInPlayList = $playlist->songs;
         $ListOfIdsforMusicList = MakeListofIds($MusicsInPlayList);
         return view('playlist.playlistSingle', compact('playlistName', 'MusicsInPlayList', 'ListOfIdsforMusicList', 'id'));
     }
@@ -46,7 +46,7 @@ class PlayListController extends Controller
     public function index()
     {
         $user = User::find(Auth::user()->id);
-        $Playlists = $user->getUserPlaylists();
+        $Playlists = $user->playlists;
         return view('playlist.playlists', compact('Playlists'));
     }
 }

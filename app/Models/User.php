@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Song;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Notifications\Notifiable;
@@ -48,6 +49,24 @@ class User extends Authenticatable implements MustVerifyEmail
         'password' => 'hashed',
     ];
 
+    public function songs()
+    {
+        return $this->hasMany(Song::class, 'owner_id');
+    }
+
+    public function playlists()
+    {
+        return $this->hasMany(playlist::class, 'owner_id');
+    }
+
+    public function likedSongs() {
+        return $this->belongsToMany(Song::class, 'likes', 'user_id', 'music_id')->withPivot('updated_at');
+    }
+
+    public function viewedSongs() {
+        return $this->belongsToMany(Song::class, 'views', 'user_id', 'music_id')->withPivot('updated_at');
+    }
+
     public static function getTopArtist() {
         $TopArtist = DB::table('subs')
         ->join('users', 'users.id', '=', 'subs.artist_id')
@@ -61,28 +80,16 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function getLikedMusics() {
-        $Liked = DB::table('likes')
-        ->select('user_id', 'music_id as id', 'updated_at')
-        ->where('user_id', $this->id)
-        ->orderByDesc('updated_at')
+        $Liked = $this->likedSongs()
+        ->orderByDesc('pivot_updated_at')
         ->get();
         return $Liked;
     }
 
     public function getViewedMusics() {
-        $Viewed = DB::table('views')
-        ->select('user_id', 'music_id as id', 'updated_at')
-        ->where('user_id', $this->id)
-        ->orderByDesc('updated_at')
+        $Viewed = $this->viewedSongs()
+        ->orderByDesc('pivot_updated_at')
         ->get();
         return $Viewed;
-    }
-
-    public function getUserPlaylists() {
-        $Playlists = DB::table('playlists')
-            ->select('name', 'id')
-            ->where('owner_id', $this->id)
-            ->get();
-        return $Playlists;
     }
 }
