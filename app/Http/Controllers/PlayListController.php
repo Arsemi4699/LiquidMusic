@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\playlist;
 use Carbon\Carbon;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -11,10 +13,8 @@ class PlayListController extends Controller
 {
     public function AddToPlayList($id)
     {
-        $Playlists = DB::table('playlists')
-            ->select('name', 'id')
-            ->where('owner_id', Auth::user()->id)
-            ->get();
+        $user = User::find(Auth::user()->id);
+        $Playlists = $user->getUserPlaylists();
         $musicId = $id;
         if ($Playlists->count())
             return view('playlist.addToPlayList', compact('Playlists', 'musicId'));
@@ -27,25 +27,16 @@ class PlayListController extends Controller
     }
     public function showAPlaylist($id)
     {
-        $playlistName = DB::table('playlists')
-            ->where('id', $id)
-            ->first()->name;
-
-        $MusicsInPlayList = DB::table('song_in_playlist')
-            ->select('music_id as id', 'updated_at')
-            ->where('list_id', $id)
-            ->orderByDesc('updated_at')
-            ->get();
+        $playlist = playlist::find($id);
+        $playlistName = $playlist->name;
+        $MusicsInPlayList = $playlist->getAllMusics();
         $ListOfIdsforMusicList = MakeListofIds($MusicsInPlayList);
         return view('playlist.playlistSingle', compact('playlistName', 'MusicsInPlayList', 'ListOfIdsforMusicList', 'id'));
     }
     public function deletePlayList(Request $req)
     {
         try {
-            DB::table('playlists')
-                ->where('owner_id', Auth::user()->id)
-                ->where('id', $req->id)
-                ->delete();
+            playlist::find($req->id)->delete();
             session()->flash('success', 'لیست با موفقیت حذف شد!');
         } catch (\Throwable $th) {
             session()->flash('error', 'حذف لیست با شکست مواجه شد!');
@@ -54,10 +45,8 @@ class PlayListController extends Controller
     }
     public function index()
     {
-        $Playlists = DB::table('playlists')
-            ->select('name', 'id')
-            ->where('owner_id', Auth::user()->id)
-            ->get();
+        $user = User::find(Auth::user()->id);
+        $Playlists = $user->getUserPlaylists();
         return view('playlist.playlists', compact('Playlists'));
     }
 }
