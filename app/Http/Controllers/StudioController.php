@@ -122,7 +122,7 @@ class StudioController extends Controller
 
     public function billing()
     {
-        $monetizeTH = 100;
+        $monetizeTH = 0;
 
         $valid = false;
         $seted = false;

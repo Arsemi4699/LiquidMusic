@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Song;
+use App\Models\Wallet;
+use App\Models\BankAcc;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Notifications\Notifiable;
@@ -57,6 +59,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function playlists()
     {
         return $this->hasMany(Playlist::class, 'owner_id');
+    }
+
+    public function bankAcc()
+    {
+        return $this->hasOne(BankAcc::class, 'artist_id');
+    }
+
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class, 'artist_id');
     }
 
     public function likedSongs() {
