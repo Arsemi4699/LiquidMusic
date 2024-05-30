@@ -121,8 +121,15 @@ Please note that all numbers and percentages mentioned here are for illustrative
      php artisan storage:link
      ```
 
+## Vendor Setup
+6. install Vendor:
+   - Navigate to the LiquidMusic directory in the terminal and execute the following artisan command:
+     ```
+     composer install
+     ```
+
 ## Final Execution
-6. Execute the service:
+7. Execute the service:
    - After completing the previous steps, navigate to the LiquidMusic directory in the terminal and enter the following command to run the service:
      ```
      php artisan serv
