@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Song;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,12 +16,8 @@ class ArtistListController extends Controller
 
     public function showFollowed()
     {
-        $Followed = DB::table('subs')
-            ->join('users', 'users.id', '=', 'subs.artist_id')
-            ->select('*')
-            ->where('user_id', Auth::user()->id)
-            ->orderByDesc('subs.updated_at')
-            ->get();
+        $user = Auth::user();
+        $Followed = $user->subs()->orderByDesc('pivot_updated_at')->get();
         return view('user.followedArtist', compact('Followed'));
     }
 

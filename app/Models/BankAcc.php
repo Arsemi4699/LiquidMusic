@@ -13,7 +13,6 @@ class BankAcc extends Model
     protected $primaryKey = 'artist_id';
     public $incrementing = false;
     protected $guarded = [];
-    public $timestamps = true;
 
     public function artist()
     {
