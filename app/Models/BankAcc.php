@@ -10,7 +10,10 @@ class BankAcc extends Model
     use HasFactory;
 
     protected $table = "artist_bank";
+    protected $primaryKey = 'artist_id';
+    public $incrementing = false;
     protected $guarded = [];
+    public $timestamps = true;
 
     public function artist()
     {

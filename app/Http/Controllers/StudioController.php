@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Song;
 use App\Models\User;
+use App\Models\Payoff;
+use App\Models\BankAcc;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -27,28 +29,24 @@ class StudioController extends Controller
                 'payoff' => 'required|gt:0',
             ]);
 
+            $artist = User::findOrFail($req->artistID);
+
             DB::beginTransaction();
 
-            $balanceC = DB::table('artist_wallet')
-                ->where('artist_id', $req->artistID)
-                ->first();
+            $wallet = $artist->wallet;
 
-            $balance = ($balanceC != null) ? $balanceC->balance : 0;
+            $balance = ($wallet != null) ? $wallet->balance : 0;
 
             if ($balance >= $req->payoff) {
-                DB::table('payoffs')
-                    ->insert([
-                        'artist_id' => $req->artistID,
-                        'money' => $req->payoff,
-                        'created_at' => Carbon::now(),
-                        'updated_at' => Carbon::now()
-                    ]);
+                $newPayoff = new Payoff;
+                $newPayoff->fill([
+                    'artist_id' => $req->artistID,
+                    'money' => $req->payoff
+                ]);
+                $newPayoff->save();
 
-                DB::table('artist_wallet')
-                    ->where('artist_id', $req->artistID)
-                    ->update([
-                        'balance' => $balance - $req->payoff,
-                        'updated_at' => Carbon::now()
+                $wallet->update([
+                        'balance' => $balance - $req->payoff
                     ]);
                 session()->flash('payoffDone', 'درخواست با موفقیت ثبت شد!');
             } else {
@@ -68,11 +66,12 @@ class StudioController extends Controller
         $req->validate([
             'artistID' => 'required',
         ]);
-        DB::table('artist_bank')
-            ->where('artist_id', $req->artistID)
-            ->update([
-                'status' => 3,
-                'updated_at' => Carbon::now()
+
+        $artist = User::findOrFail($req->artistID);
+        $bank = $artist->bankAcc;
+
+        $bank->update([
+                'status' => 3
             ]);
 
         return redirect()->route('studioBilling');
@@ -89,32 +88,31 @@ class StudioController extends Controller
             'shaba' => 'required',
             'artistID' => 'required',
         ]);
-        if (DB::table('artist_bank')->where('artist_id', $req->artistID)->doesntExist()) {
-            DB::table('artist_bank')
-                ->insert([
-                    'artist_id' => $req->artistID,
-                    'CID' => $req->cnumber,
-                    'ownerFName' => $req->fname,
-                    'ownerLName' => $req->lname,
-                    'accountNum' => $req->anumber,
-                    'BankCardNum' => $req->cardnumber,
-                    'ShabaNum' => $req->shaba,
-                    'status' => 0,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now()
-                ]);
+
+        $artist = User::findOrFail($req->artistID);
+        $bank = $artist->bankAcc;
+        if ($bank == null) {
+            $newBankAcc = new BankAcc;
+            $newBankAcc->fill([
+                'artist_id' => $req->artistID,
+                'CID' => $req->cnumber,
+                'ownerFName' => $req->fname,
+                'ownerLName' => $req->lname,
+                'accountNum' => $req->anumber,
+                'BankCardNum' => $req->cardnumber,
+                'ShabaNum' => $req->shaba,
+                'status' => 0
+            ]);
+            $newBankAcc->save();
         } else {
-            DB::table('artist_bank')
-                ->where('artist_id', $req->artistID)
-                ->update([
+            $bank->update([
                     'CID' => $req->cnumber,
                     'ownerFName' => $req->fname,
                     'ownerLName' => $req->lname,
                     'accountNum' => $req->anumber,
                     'BankCardNum' => $req->cardnumber,
                     'ShabaNum' => $req->shaba,
-                    'status' => 0,
-                    'updated_at' => Carbon::now()
+                    'status' => 0
                 ]);
         }
         return redirect()->route('studioBilling');
@@ -122,20 +120,19 @@ class StudioController extends Controller
 
     public function billing()
     {
+        $artist = Auth::user();
         $monetizeTH = 0;
-
         $valid = false;
         $seted = false;
         $confirmed = 0;
         $ownerFullname = "";
         $shaba = 0;
-        $followers = DB::table('subs')
-            ->where('artist_id', Auth::user()->id)
-            ->count();
+
+        $followers = $artist->followedByUsers()->count();
 
         $valid = ($monetizeTH <= $followers) ? true : false;
         if ($valid) {
-            $bankInfoRow = DB::table('artist_bank')->where('artist_id', Auth::user()->id)->first();
+            $bankInfoRow = $artist->bankAcc;
             if ($bankInfoRow == null)
                 $seted = false;
             else {
@@ -146,25 +143,21 @@ class StudioController extends Controller
             }
         }
 
-        $balanceC = DB::table('artist_wallet')
-            ->where('artist_id', Auth::user()->id)
-            ->first();
+        $wallet = $artist->wallet;
 
-        $balance = ($balanceC != null) ? $balanceC->balance : 0;
+        $balance = ($wallet != null) ? $wallet->balance : 0;
 
-        $payOffLogs = DB::table('payoffs')
-            ->where('artist_id', Auth::user()->id)
+        $payOffLogs = $artist->payoffs()
             ->orderBy('updated_at', 'desc')
             ->get();
+
         return view('studio.billing', compact('valid', 'seted', 'confirmed', 'balance', 'ownerFullname', 'shaba', 'payOffLogs'));
     }
 
     public function profile()
     {
         $artist = Auth::user();
-        $followers = DB::table('subs')
-            ->where('artist_id', $artist->id)
-            ->count();
+        $followers = $artist->followedByUsers()->count();
 
         return view('studio.profile', compact('artist', 'followers'));
     }
@@ -211,21 +204,19 @@ class StudioController extends Controller
 
     public function index()
     {
-        $ArtistMusics = DB::table('songs')
-            ->where('owner_id', Auth::user()->id)
-            ->orderByDesc('created_at')
-            ->get();
+        $artist = Auth::user();
+        $ArtistMusics = $artist->songs()->orderByDesc('created_at')->get();
 
         $lastMViews = DB::table('views')
             ->join('songs', 'views.music_id', '=', 'songs.id')
-            ->where('songs.owner_id', Auth::user()->id)
+            ->where('songs.owner_id', $artist->id)
             ->where('views.updated_at', '>=', Carbon::now()->subDays(30))
             ->count();
 
 
         $last2MViews = DB::table('views')
             ->join('songs', 'views.music_id', '=', 'songs.id')
-            ->where('songs.owner_id', Auth::user()->id)
+            ->where('songs.owner_id', $artist->id)
             ->where('views.updated_at', '>=', Carbon::now()->subDays(60))
             ->count();
 
@@ -235,16 +226,13 @@ class StudioController extends Controller
         if ($twoMounAge)
             $growingRateViews = (($lastMViews - $twoMounAge) / $twoMounAge) * 100;
 
-        $Artistfollowers = DB::table('subs')
-            ->where('artist_id', Auth::user()->id)
-            ->count();
+        $Artistfollowers = $artist->followedByUsers()->count();
 
 
-        $balanceC = DB::table('artist_wallet')
-            ->where('artist_id', Auth::user()->id)
-            ->first();
+        $wallet = $artist->wallet;
+        $payoffs = $artist->payoffs()->sum('money');
 
-        $balance = ($balanceC != null) ? $balanceC->balance : 0;
+        $balance = ($wallet != null) ? $payoffs + $wallet->balance : 0;
         return view('studio.studioDash', compact('ArtistMusics', 'lastMViews', 'growingRateViews', 'Artistfollowers', 'balance'));
     }
 }

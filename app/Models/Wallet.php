@@ -10,6 +10,8 @@ class Wallet extends Model
     use HasFactory;
 
     protected $table = "artist_wallet";
+    protected $primaryKey = 'artist_id';
+    public $incrementing = false;
     protected $guarded = [];
 
     public function artist()

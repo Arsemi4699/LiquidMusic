@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Song;
+use App\Models\Payoff;
 use App\Models\Wallet;
 use App\Models\BankAcc;
 use Laravel\Sanctum\HasApiTokens;
@@ -77,6 +78,18 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function viewedSongs() {
         return $this->belongsToMany(Song::class, 'views', 'user_id', 'music_id')->withPivot('updated_at');
+    }
+
+    public function subs() {
+        return $this->belongsToMany(User::class, 'subs', 'user_id', 'artist_id')->withPivot('updated_at');
+    }
+
+    public function followedByUsers() {
+        return $this->belongsToMany(User::class, 'subs', 'artist_id', 'user_id')->withPivot('updated_at');
+    }
+
+    public function payoffs() {
+        return $this->hasMany(Payoff::class, 'artist_id', 'id');
     }
 
     public static function getTopArtist() {
